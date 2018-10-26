@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf8">
+	<title>One Pen Paint TEST</title>
+	<link rel="stylesheet" href="style.css">
+	<script defer src="main.js"> </script>
+	<script defer src="axios.js"></script>
+</head>
+<body>
+	宽度：<input type="text" id='width'>
+	高度：<input type="text" id='height'>
+	
+	<button id="ensure_btn">确认宽高</button>
+	<button id='switch_btn'>切换到编辑模式</button>
+	
+	<br>
+
+	<div id='input-model' style='display:none; margin-top:5px;'>
+		大关卡数：<input type="text" id='big-number'> <br>
+		小关卡数：<input type="text" id='small-number'> <br>
+		<button id='send_btn'>确认并录入关卡</button>
+		<br>
+		<br>
+	</div>
+	<div class='container'></div>
+</body>
+</html>
