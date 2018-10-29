@@ -54,13 +54,15 @@ let sendChapterData = router("/sendChapter",(req,res)=>{
     });
     req.on("end",()=>{
 		let d = JSON.parse(data);
-		fs.writeFile(`./chapters/${d.chapterNumber}.json`, data, (err) => {
-			if (err) throw err;
-			console.log('The file has been saved!');
-			res.writeHead(200, {"Content-Type": "text/plane"});
-			res.write("success");
-			res.end();
-		});
+		fs.unlink(`../chapters/${d.chapterNumber}.json`,(err)=>{
+			fs.writeFile(`../chapters/${d.chapterNumber}.json`, data, (err) => {
+				if (err) throw err;
+				console.log('The file has been saved!');
+				res.writeHead(200, {"Content-Type": "text/plane"});
+				res.write("success");
+				res.end();
+			});
+		})
     })
 });
 
@@ -72,7 +74,7 @@ let getChapter = router("/getChapter",(req,res)=>{
 	});
     req.on("end",()=>{
 		let d = JSON.parse(data);
-		fs.readFile(`./chapters/${d.chapterNumber}.json`, (err,data) => {
+		fs.readFile(`../chapters/${d.chapterNumber}.json`, (err,data) => {
 			if (err) throw err;
 			res.writeHead(200, {"Content-Type": "text/plane"});
 			res.write(data);

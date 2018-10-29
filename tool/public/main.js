@@ -37,10 +37,10 @@ let unit = 55;
 // c: chapterData
 let c = {
 	chapterNumber:null,
-	height:12,
-	width:12,
+	height:8,
+	width:8,
 	startNode:{
-		x:1,
+		x:0,
 		y:0
 	},
 	lacks:[
@@ -81,6 +81,22 @@ function removeLack(node){
 	return false;
 }
 
+function removeOut(){
+	let newLacks = [];
+	for(let lack of c.lacks){
+		if(lack.x < c.width||lack.y < c.height){
+			newLacks.push(lack);
+		}
+	}
+	c.lacks = newLacks;
+
+	if(c.startNode){
+		if(c.startNode.x >= c.width || c.startNode.y >= c.height){
+			c.startNode = null;
+		}
+	}
+}
+
 
 
 
@@ -91,6 +107,9 @@ let winNumber = null,
 
 initailGame();
 function initailGame(){
+	one("#width").value = c.width;
+	one("#height").value = c.height;
+
 	nodesLink = new NodesLink();
 	nodeMap = [];
 	winNumber = c.height * c.width - c.lacks.length;
@@ -260,6 +279,7 @@ one("#ensure_btn").onclick = function(){
 	}else{
 		c.width = w;
 		c.height = h;
+		removeOut();
 		initailGame();
 	}
 }
@@ -297,6 +317,9 @@ one("#send_btn").onclick = function(){
 		})
 		.then(function (response) {
 			console.log(response);
+			if(response.data=='success'){
+				alert("录入成功！");
+			}
 		})
 		.catch(function (error) {
 			console.log(error);
@@ -318,9 +341,7 @@ one("#get_btn").onclick = function(){
 			chapterNumber: bigNumber+"_"+smallNumber
 		})
 		.then(function (response) {
-			let data = response.data;
-			console.log(data);
-			c = data;
+			c = response.data;
 			initailGame();
 		})
 		.catch(function (error) {

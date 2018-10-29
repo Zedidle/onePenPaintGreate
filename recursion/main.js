@@ -1,8 +1,10 @@
-let chapter = require("./chapters/5_3.js"),
-	{height,width,lacks,start} = chapter,
+let chapter = require("../chapters/5_15.json"),
+	{height,width,lacks,startNode} = chapter,
 	winLength = height * width - lacks.length,
 	link = [],
 	map = [];
+
+
 
 let head = null;
 let upNode = null, rightNode = null, downNode = null, leftNode = null;
@@ -18,6 +20,8 @@ if(false){
 	console.timeEnd("A");
 	showResult();
 }
+
+
 
 
 function showResult(){
@@ -53,7 +57,7 @@ function iniMap(){
 				map[i] = [];
 			}
 			if(!isLack(node)){
-				if(i==start.y&&j==start.x){
+				if(i==startNode.y&&j==startNode.x){
 					node.isStart = true;
 					node.in = true;
 					link.push(node);
@@ -161,3 +165,6 @@ function findWinWay(){
 	link[link.length-1].dir = 4;
 	return link;
 }
+
+// console.log(lacks);
+// console.log(winLength);
