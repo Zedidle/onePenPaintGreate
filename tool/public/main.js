@@ -34,34 +34,36 @@ let isEditModel = false;
 
 let unit = 55;
 
-let height = 12;
-let width = 12;
-
-let startNode = {
-	x:1,
-	y:0
-};
-
-let lacks = [
-	{
+// c: chapterData
+let c = {
+	chapterNumber:null,
+	height:12,
+	width:12,
+	startNode:{
 		x:1,
-		y:1
+		y:0
 	},
-	{
-		x:4,
-		y:3
-	},
-	{
-		x:3,
-		y:1
-	}
-];
+	lacks:[
+		{
+			x:1,
+			y:1
+		},
+		{
+			x:4,
+			y:3
+		},
+		{
+			x:3,
+			y:1
+		}
+	]
+}
 
 
 function isLack(node){
 	let _y = node.y, _x = node.x;
-	for(let item of lacks){
-		if(item.x == _x  && item.y == _y){
+	for(let lack of c.lacks){
+		if(lack.x == _x  && lack.y == _y){
 			return true;
 		}
 	}
@@ -70,9 +72,9 @@ function isLack(node){
 
 function removeLack(node){
 	let _x = node.x, _y = node.y;
-	for(let i=0,l=lacks.length;i<l;i++){
-		if(_x == lacks[i].x && _y == lacks[i].y){
-			lacks.splice(i,1);
+	for(let i=0,l=c.lacks.length;i<l;i++){
+		if(_x == c.lacks[i].x && _y == c.lacks[i].y){
+			c.lacks.splice(i,1);
 			return true;
 		}
 	}
@@ -91,12 +93,12 @@ initailGame();
 function initailGame(){
 	nodesLink = new NodesLink();
 	nodeMap = [];
-	winNumber = height * width - lacks.length;
+	winNumber = c.height * c.width - c.lacks.length;
 	let container = one(".container");
 	container.innerHTML = "";
-	for(let i=0;i<height;i++){
+	for(let i=0;i<c.height;i++){
 		nodeMap[i] = [];
-		for(let j=0;j<width;j++){
+		for(let j=0;j<c.width;j++){
 			let node = document.createElement('div');
 
 			node.style.top = i * unit + 'px';
@@ -104,7 +106,7 @@ function initailGame(){
 			node.y = i;
 			node.x = j;
 
-			if(i==startNode.y&&j==startNode.x){
+			if(i==c.startNode.y&&j==c.startNode.x){
 				nodeAction(node);
 				nodesLink.push(node);
 				node.status = 2;
@@ -153,25 +155,25 @@ function nodeFactory(node){
 			if(node.status==0){
 				node.status = 1; 
 				nodeLack(node);
-				lacks.push({
+				c.lacks.push({
 					x: node.x,
 					y: node.y
 				})
 
 			}else if(node.status==1){
-				if(startNode){
+				if(c.startNode){
 					alert("你必须先将现有的起点去掉！");
 				}else{
 					node.status = 2;
 					nodeAction(node);
-					startNode = {
+					c.startNode = {
 						x: node.x,
 						y: node.y
 					}
 					removeLack(node);
 				}
 			}else if(node.status==2){
-				startNode = null;
+				c.startNode = null;
 				node.status = 0;
 				nodeDefault(node);
 			}
@@ -256,8 +258,8 @@ one("#ensure_btn").onclick = function(){
 	if(w<1 || h<1 || w%1!==0 || h%1!==0){
 		alert("正宽高必须都是正整数！");
 	}else{
-		width = w;
-		height = h;
+		c.width = w;
+		c.height = h;
 		initailGame();
 	}
 }
@@ -286,15 +288,40 @@ one("#send_btn").onclick = function(){
 	if(bigNumber<1 || smallNumber<1 || bigNumber%1!==0 || smallNumber%1!==0){
 		alert("大小关卡数必须都是正整数！");
 	}else{
-		axios.post('/sendChapterData', {
-			width,
-			height,
-			startNode,
-			lacks,
+		axios.post('/sendChapter', {
+			width:c.width,
+			height:c.height,
+			startNode:c.startNode,
+			lacks:c.lacks,
 			chapterNumber: bigNumber+"_"+smallNumber
 		})
 		.then(function (response) {
 			console.log(response);
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+	}
+}
+
+
+one("#get_btn").onclick = function(){
+	console.log("get chapter")
+
+	let bigNumber = parseInt(one("#big-number").value);
+	let smallNumber = parseInt(one("#small-number").value);
+
+	if(bigNumber<1 || smallNumber<1 || bigNumber%1!==0 || smallNumber%1!==0){
+		alert("大小关卡数必须都是正整数！");
+	}else{
+		axios.post('/getChapter', {
+			chapterNumber: bigNumber+"_"+smallNumber
+		})
+		.then(function (response) {
+			let data = response.data;
+			console.log(data);
+			c = data;
+			initailGame();
 		})
 		.catch(function (error) {
 			console.log(error);
