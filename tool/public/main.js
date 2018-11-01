@@ -309,6 +309,7 @@ one("#switch-btn").onclick = function(){
 		if(c.startNode){
 			one("#input-model").style.display = "none";
 			one("#makeResult-btn").style.display = "inline-block";
+			one("#restart-btn").style.display = "inline-block";
 			isEditModel = false;
 			this.innerText="切换到编辑模式";
 		}else{
@@ -317,6 +318,7 @@ one("#switch-btn").onclick = function(){
 	}else{
 		one("#input-model").style.display = "block";
 		one("#makeResult-btn").style.display = "none";
+		one("#restart-btn").style.display = "none";
 		isEditModel = true;
 		this.innerText="确认并返回游戏";
 	}
