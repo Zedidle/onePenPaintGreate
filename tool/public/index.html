@@ -5,22 +5,26 @@
 	<title>One Pen Paint TEST</title>
 	<link rel="stylesheet" href="style.css">
 	<script defer src="main.js"> </script>
+	<script defer src="iterator.js"> </script>
 	<script defer src="axios.js"></script>
 </head>
 <body>
 	宽度：<input type="text" id='width'>
 	高度：<input type="text" id='height'>
 	
-	<button id="ensure_btn">确认宽高</button>
-	<button id='switch_btn'>切换到编辑模式</button>
+	<button id="ensureWH-btn">确认宽高</button>
+	<button id='switch-btn'>切换到编辑模式</button>
+	<button id='makeResult-btn'>生成答案</button>
+	<button id='restart-btn' onclick='initailGame()'>重开</button>
 	
 	<br>
 
 	<div id='input-model' style='display:none; margin-top:5px;'>
 		大关卡数：<input type="text" id='big-number'> <br>
 		小关卡数：<input type="text" id='small-number'> <br>
-		<button id='send_btn'>确认并录入关卡</button>
-		<button id='get_btn'>读取关卡</button>
+		<button id='send-btn'>确认并录入关卡</button>
+		<button id='get-btn'>读取关卡</button>
+		<button id='clean-btn'>清空</button>
 		<br>
 		<br>
 	</div>

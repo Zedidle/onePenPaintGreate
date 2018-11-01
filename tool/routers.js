@@ -10,7 +10,7 @@ const router = function(url,callback){
 }
 
 let index = router("/", (req, res)=>{
-	fs.readFile("./public/index.html", (err,data)=>{
+	fs.readFile("./tool/public/index.html", (err,data)=>{
 		if(err) throw err;
 
 		res.writeHead(200, {"Content-Type": "text/html"});
@@ -20,7 +20,7 @@ let index = router("/", (req, res)=>{
 });
 
 let main = router("/main.js",(req,res)=>{
-	fs.readFile("./public/main.js", (err,data)=>{
+	fs.readFile("./tool/public/main.js", (err,data)=>{
 		if(err) throw err;
 		res.writeHead(200, {"Content-Type": "application/x-javascript"});
 		res.write(data);
@@ -29,7 +29,7 @@ let main = router("/main.js",(req,res)=>{
 });
 
 let style = router("/style.css",(req,res)=>{
-	fs.readFile("./public/style.css", (err,data)=>{
+	fs.readFile("./tool/public/style.css", (err,data)=>{
 		if(err) throw err;
 		res.writeHead(200, {"Content-Type": "text/css"});
 		res.write(data);
@@ -38,13 +38,21 @@ let style = router("/style.css",(req,res)=>{
 });
 
 let axios = router("/axios.js",(req,res)=>{
-	fs.readFile("./public/axios.js", (err,data)=>{
+	fs.readFile("./tool/public/axios.js", (err,data)=>{
 		if(err) throw err;
 		res.writeHead(200, {"Content-Type": "application/x-javascript"});
 		res.write(data);
 		res.end();
 	});
 });
+let iterator = router("/iterator.js",(req,res)=>{
+	fs.readFile("./iterator.js", (err,data)=>{
+		if(err) throw err;
+		res.writeHead(200, {"Content-Type": "application/x-javascript"});
+		res.write(data);
+		res.end();
+	});
+})
 
 let sendChapterData = router("/sendChapter",(req,res)=>{
 	console.log("sendChapter")
@@ -54,15 +62,16 @@ let sendChapterData = router("/sendChapter",(req,res)=>{
     });
     req.on("end",()=>{
 		let d = JSON.parse(data);
-		fs.unlink(`../chapters/${d.chapterNumber}.json`,(err)=>{
-			fs.writeFile(`../chapters/${d.chapterNumber}.json`, data, (err) => {
+		// fs.unlink(`../chapters/${d.chapterNumber}.json`,(err)=>{
+		// 	console.log(`remove ${d.chapterNumber}.json`);
+			fs.writeFile(`./chapters/${d.chapterNumber}.json`, data, (err) => {
 				if (err) throw err;
-				console.log('The file has been saved!');
+				console.log(`save chapter ${d.chapterNumber}.json`);
 				res.writeHead(200, {"Content-Type": "text/plane"});
 				res.write("success");
 				res.end();
 			});
-		})
+		// })
     })
 });
 
@@ -72,29 +81,48 @@ let getChapter = router("/getChapter",(req,res)=>{
 	req.on("data",(chunk)=>{
 		data += chunk;
 	});
-    req.on("end",()=>{
+	req.on("end",()=>{
 		let d = JSON.parse(data);
-		fs.readFile(`../chapters/${d.chapterNumber}.json`, (err,data) => {
+		fs.readFile(`./chapters/${d.chapterNumber}.json`, (err,data) => {
 			if (err) throw err;
 			res.writeHead(200, {"Content-Type": "text/plane"});
 			res.write(data);
 			res.end();
 		});
-    })
+	})
 });
 
 
-
+let recordResult = router("/recordResult",(req,res)=>{
+	console.log("recordResult")
+    let data = "";
+    req.on("data",(chunk)=>{
+    	data += chunk;
+    });
+    req.on("end",()=>{
+		let d = JSON.parse(data);
+		console.log(d);
+		fs.writeFile(`./results/${d.chapterNumber}.json`, data, (err) => {
+			if (err) throw err;
+			console.log(`save result ${d.chapterNumber}.json`);
+			res.writeHead(200, {"Content-Type": "text/plane"});
+			res.write("success");
+			res.end();
+		});
+    })
+});
 
 module.exports = function(req, res){
 	[
 		index,
 		main,
 		style,
-		sendChapterData,
 		axios,
+		iterator,
+		sendChapterData,
 		getChapter,
-	
+		recordResult,
+
 	].forEach(r=>{
 		r(req, res);
 	})

@@ -37,28 +37,14 @@ let unit = 55;
 // c: chapterData
 let c = {
 	chapterNumber:null,
-	height:8,
-	width:8,
+	height:7,
+	width:7,
 	startNode:{
 		x:0,
 		y:0
 	},
-	lacks:[
-		{
-			x:1,
-			y:1
-		},
-		{
-			x:4,
-			y:3
-		},
-		{
-			x:3,
-			y:1
-		}
-	]
+	lacks:[]
 }
-
 
 function isLack(node){
 	let _y = node.y, _x = node.x;
@@ -68,6 +54,11 @@ function isLack(node){
 		}
 	}
 	return false;
+}
+
+function clean(){
+	c.startNode = null;
+	c.lacks = [];
 }
 
 function removeLack(node){
@@ -104,7 +95,6 @@ let winNumber = null,
 	nodesLink = null,
 	nodeMap = [];
 
-
 initailGame();
 function initailGame(){
 	one("#width").value = c.width;
@@ -125,7 +115,7 @@ function initailGame(){
 			node.y = i;
 			node.x = j;
 
-			if(i==c.startNode.y&&j==c.startNode.x){
+			if(c.startNode && i==c.startNode.y&&j==c.startNode.x){
 				nodeAction(node);
 				nodesLink.push(node);
 				node.status = 2;
@@ -202,11 +192,6 @@ function nodeFactory(node){
 
 
 
-
-
-
-
-
 function nodeOver(node){
 	if(node.index){
 		nodesLink.fadeNodes(node.index);
@@ -221,8 +206,9 @@ function nodeOut(node){
 	if(isCurrentNeighbor(node)){
 		nodesLink.push(node);
 		if(winNumber === nodesLink.getLength()){
-			alert("YOU WIN");
+			gameWin();
 		}
+
 	}else{
 		if(node.index != nodesLink.getLength()-1){
 			nodeDefault(node);
@@ -230,10 +216,42 @@ function nodeOut(node){
 	}
 }
 
-function makeCurrent(node){
-	nodeOver(node);
-	nodeOut(node);
+function gameWin(){
+	console.log(nodesLink);
+	let bigNumber = parseInt(one("#big-number").value);
+	let smallNumber = parseInt(one("#small-number").value);
+	
+	let string = "胜利";
+	if(!bigNumber || !smallNumber){
+		string += " ，但如果想录入结果，则需要先确定关卡！";
+	}else{
+		nodesLink.chapterNumber = bigNumber+"_"+smallNumber;
+		nodesLink.link = filterXY(nodesLink.link);
+		axios.post('/recordResult', nodesLink)
+		.then(function (response) {
+			console.log(response);
+			if(response.data=='success'){
+				console.log("录入成功！");
+			}
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+	}
+	alert(string);
+
+	function filterXY(link){
+		let newLink = [];
+		for(let i of link){
+			newLink.push({
+				x:i.x,
+				y:i.y
+			})
+		}
+		return newLink;
+	}
 }
+
 
 function nodeAction(node){
 	node.className = 'node active';
@@ -270,12 +288,14 @@ function one(arg){
 	return document.querySelector(arg);
 }
 
-one("#ensure_btn").onclick = function(){
+one("#ensureWH-btn").onclick = function(){
 	let w = parseInt(one("#width").value),
 		h = parseInt(one("#height").value);
 
 	if(w<1 || h<1 || w%1!==0 || h%1!==0){
 		alert("正宽高必须都是正整数！");
+	}else if(!c.startNode){
+		alert("确定宽高时必须确保起点存在！")
 	}else{
 		c.width = w;
 		c.height = h;
@@ -284,13 +304,19 @@ one("#ensure_btn").onclick = function(){
 	}
 }
 
-one("#switch_btn").onclick = function(){
+one("#switch-btn").onclick = function(){
 	if(isEditModel){
-		one("#input-model").style.display = "none";
-		isEditModel = false;
-		this.innerText="切换到编辑模式";
+		if(c.startNode){
+			one("#input-model").style.display = "none";
+			one("#makeResult-btn").style.display = "inline-block";
+			isEditModel = false;
+			this.innerText="切换到编辑模式";
+		}else{
+			alert("返回游戏前起点必须存在！");
+		}
 	}else{
 		one("#input-model").style.display = "block";
+		one("#makeResult-btn").style.display = "none";
 		isEditModel = true;
 		this.innerText="确认并返回游戏";
 	}
@@ -299,7 +325,7 @@ one("#switch_btn").onclick = function(){
 
 
 
-one("#send_btn").onclick = function(){
+one("#send-btn").onclick = function(){
 	console.log("send chapter")
 
 	let bigNumber = parseInt(one("#big-number").value);
@@ -308,6 +334,8 @@ one("#send_btn").onclick = function(){
 	if(bigNumber<1 || smallNumber<1 || bigNumber%1!==0 || smallNumber%1!==0){
 		alert("大小关卡数必须都是正整数！");
 	}else{
+		console.log(c.lacks)
+
 		axios.post('/sendChapter', {
 			width:c.width,
 			height:c.height,
@@ -328,7 +356,7 @@ one("#send_btn").onclick = function(){
 }
 
 
-one("#get_btn").onclick = function(){
+one("#get-btn").onclick = function(){
 	console.log("get chapter")
 
 	let bigNumber = parseInt(one("#big-number").value);
@@ -347,5 +375,36 @@ one("#get_btn").onclick = function(){
 		.catch(function (error) {
 			console.log(error);
 		});
+	}
+}
+
+one("#clean-btn").onclick = function(){
+	clean();
+	initailGame();
+}
+
+
+one("#makeResult-btn").onclick = function(){
+	console.log("makeResult:");
+	let result = getResult(c);
+	if(result){
+		nodesLink.fadeNodes(0);
+		console.log(result);
+		
+		let index = 1;
+		let theNode = null;
+		(function render(){
+			theNode = nodeMap[result[index].y][result[index].x];
+			nodeOver(theNode);
+			nodeOut(theNode);
+			index++;
+			if(index == result.length){
+				return "Finish";
+			}else{
+				setTimeout(render,50);
+			}
+		})();
+	}else{
+		alert("无法在有效时间（2s）内找到结果！");
 	}
 }

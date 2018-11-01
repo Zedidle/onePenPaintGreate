@@ -32,3 +32,17 @@ input{
 .lack{
 	background-color:transparent;
 }
+
+
+
+#send-btn{
+	background-color:#6F3;
+	border-radius: 3px;
+}
+
+#clean-btn{
+	background-color:#F33;
+	border-radius: 3px;
+	width:60px;
+	color:#FFF;
+}

@@ -1,0 +1,20 @@
+{
+  "name": "onepenpaintgreate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "iterator.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./tool/index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DoubleCG/onePenPaintGreate.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DoubleCG/onePenPaintGreate/issues"
+  },
+  "homepage": "https://github.com/DoubleCG/onePenPaintGreate#readme"
+}
