@@ -54,7 +54,7 @@ let iterator = router("/iterator.js",(req,res)=>{
 	});
 })
 
-let sendChapterData = router("/sendChapter",(req,res)=>{
+let sendChapter = router("/sendChapter",(req,res)=>{
 	console.log("sendChapter")
     let data = "";
     req.on("data",(chunk)=>{
@@ -92,7 +92,6 @@ let getChapter = router("/getChapter",(req,res)=>{
 	})
 });
 
-
 let recordResult = router("/recordResult",(req,res)=>{
 	console.log("recordResult")
     let data = "";
@@ -119,7 +118,7 @@ module.exports = function(req, res){
 		style,
 		axios,
 		iterator,
-		sendChapterData,
+		sendChapter,
 		getChapter,
 		recordResult,
 

@@ -218,14 +218,13 @@ function nodeOut(node){
 
 function gameWin(){
 	console.log(nodesLink);
-	let bigNumber = parseInt(one("#big-number").value);
-	let smallNumber = parseInt(one("#small-number").value);
+	let chapterNumber = parseInt(one("#chapter-number").value);
 	
 	let string = "胜利";
-	if(!bigNumber || !smallNumber){
+	if(!chapterNumber){
 		string += " ，但如果想录入结果，则需要先确定关卡！";
 	}else{
-		nodesLink.chapterNumber = bigNumber+"_"+smallNumber;
+		nodesLink.chapterNumber = chapterNumber;
 		nodesLink.link = filterXY(nodesLink.link);
 		axios.post('/recordResult', nodesLink)
 		.then(function (response) {
@@ -330,20 +329,18 @@ one("#switch-btn").onclick = function(){
 one("#send-btn").onclick = function(){
 	console.log("send chapter")
 
-	let bigNumber = parseInt(one("#big-number").value);
-	let smallNumber = parseInt(one("#small-number").value);
+	let chapterNumber = parseInt(one("#chapter-number").value);
 
-	if(bigNumber<1 || smallNumber<1 || bigNumber%1!==0 || smallNumber%1!==0){
+	if(chapterNumber<1 || chapterNumber%1!==0){
 		alert("大小关卡数必须都是正整数！");
 	}else{
 		console.log(c.lacks)
-
 		axios.post('/sendChapter', {
 			width:c.width,
 			height:c.height,
 			startNode:c.startNode,
 			lacks:c.lacks,
-			chapterNumber: bigNumber+"_"+smallNumber
+			chapterNumber
 		})
 		.then(function (response) {
 			console.log(response);
@@ -361,14 +358,13 @@ one("#send-btn").onclick = function(){
 one("#get-btn").onclick = function(){
 	console.log("get chapter")
 
-	let bigNumber = parseInt(one("#big-number").value);
-	let smallNumber = parseInt(one("#small-number").value);
+	let chapterNumber = parseInt(one("#chapter-number").value);
 
-	if(bigNumber<1 || smallNumber<1 || bigNumber%1!==0 || smallNumber%1!==0){
+	if(chapterNumber<1 || chapterNumber%1!==0){
 		alert("大小关卡数必须都是正整数！");
 	}else{
 		axios.post('/getChapter', {
-			chapterNumber: bigNumber+"_"+smallNumber
+			chapterNumber
 		})
 		.then(function (response) {
 			c = response.data;
