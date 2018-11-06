@@ -5,7 +5,6 @@ if(!window){
 }
 
 function getResult(chapter){
-	// let chapter = require("./chapters/5_10.json");
 	if(!chapter && require){
 		chapter = require("./chapters/5_10.json");
 	}
@@ -121,10 +120,14 @@ function getResult(chapter){
 
 		while(link.length < winLength){
 			if(new Date().getTime()-startTime > 2000){
-				return false;
+				return 1;
 			}
 
 			head = link[link.length-1];
+			if(!head){
+				return 2;
+			}
+
 			if(!head.toUp && map[head.y-1]){
 				upNode = map[head.y-1][head.x];
 				if(upNode && !upNode.in)

@@ -32,7 +32,8 @@ class NodesLink{
 
 let isEditModel = false;
 
-let unit = 55;
+let size = 50, gap = 5;
+let unit = size + gap;
 
 // c: chapterData
 let c = {
@@ -230,7 +231,7 @@ function gameWin(){
 		.then(function (response) {
 			console.log(response);
 			if(response.data=='success'){
-				console.log("录入成功！");
+				console.log("录入结果成功！");
 			}
 		})
 		.catch(function (error) {
@@ -330,9 +331,10 @@ one("#send-btn").onclick = function(){
 	console.log("send chapter")
 
 	let chapterNumber = parseInt(one("#chapter-number").value);
-
 	if(chapterNumber<1 || chapterNumber%1!==0){
 		alert("大小关卡数必须都是正整数！");
+	}else if(!c.startNode){
+		alert("必须先确认起点！");
 	}else{
 		console.log(c.lacks)
 		axios.post('/sendChapter', {
@@ -345,7 +347,7 @@ one("#send-btn").onclick = function(){
 		.then(function (response) {
 			console.log(response);
 			if(response.data=='success'){
-				alert("录入成功！");
+				alert("录入关卡成功！");
 			}
 		})
 		.catch(function (error) {
@@ -385,24 +387,36 @@ one("#clean-btn").onclick = function(){
 one("#makeResult-btn").onclick = function(){
 	console.log("makeResult:");
 	let result = getResult(c);
-	if(result){
+
+
+
+	if(result.length){
 		nodesLink.fadeNodes(0);
 		console.log(result);
 		
-		let index = 1;
+		let i = 1;
 		let theNode = null;
-		(function render(){
-			theNode = nodeMap[result[index].y][result[index].x];
+		(function render(){		// 渲染答案
+			theNode = nodeMap[result[i].y][result[i].x];
+
 			nodeOver(theNode);
 			nodeOut(theNode);
-			index++;
-			if(index == result.length){
+			i++;
+			if(i == result.length){
 				return "Finish";
 			}else{
-				setTimeout(render,50);
+				setTimeout(render,500);
 			}
 		})();
-	}else{
+
+
+	}else if(result == 1){
 		alert("无法在有效时间（2s）内找到结果！");
+	}else if(result == 2){
+		alert("没有答案！");
 	}
 }
+
+
+
+
