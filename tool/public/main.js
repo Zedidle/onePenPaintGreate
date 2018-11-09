@@ -30,6 +30,8 @@ class NodesLink{
 	}
 }
 
+let color = 0;
+
 let isEditModel = false;
 
 let size = 50, gap = 5;
@@ -254,7 +256,8 @@ function gameWin(){
 
 
 function nodeAction(node){
-	node.className = 'node active';
+	node.className = "node";
+	node.style.backgroundColor = `rgb(${color},${color},${color})`;
 }
 
 function nodeDefault(node){
@@ -266,9 +269,9 @@ function nodeDefault(node){
 	node.hadLeft = false;
 }
 function nodeLack(node){
-	node.className = 'node lack';
+	node.className = "node";
+	node.style.backgroundColor = "transparent";
 }
-
 function isCurrentNeighbor(node){
 	let currentNode = nodesLink.getHead();
 	if(currentNode.x == node.x){
@@ -388,7 +391,8 @@ one("#makeResult-btn").onclick = function(){
 	console.log("makeResult:");
 	let result = getResult(c);
 
-
+	// let perColorAdd = Math.floor(255/result.length);
+	let perColorAdd = 255/result.length;
 
 	if(result.length){
 		nodesLink.fadeNodes(0);
@@ -403,9 +407,11 @@ one("#makeResult-btn").onclick = function(){
 			nodeOut(theNode);
 			i++;
 			if(i == result.length){
+				color = 0;
 				return "Finish";
 			}else{
-				setTimeout(render,500);
+				color += perColorAdd;
+				setTimeout(render,100);
 			}
 		})();
 

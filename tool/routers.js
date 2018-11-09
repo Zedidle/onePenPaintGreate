@@ -84,7 +84,7 @@ let getChapter = router("/getChapter",(req,res)=>{
 	req.on("end",()=>{
 		let d = JSON.parse(data);
 		fs.readFile(`./chapters/${d.chapterNumber}.json`, (err,data) => {
-			if (err) throw err;
+			if (err) console.log(err);
 			res.writeHead(200, {"Content-Type": "text/plane"});
 			res.write(data);
 			res.end();
@@ -102,7 +102,7 @@ let recordResult = router("/recordResult",(req,res)=>{
 		let d = JSON.parse(data);
 		console.log(d);
 		fs.writeFile(`./results/${d.chapterNumber}.json`, data, (err) => {
-			if (err) throw err;
+			if (err) console.log(err);
 			console.log(`save result ${d.chapterNumber}.json`);
 			res.writeHead(200, {"Content-Type": "text/plane"});
 			res.write("success");
