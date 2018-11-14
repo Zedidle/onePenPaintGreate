@@ -261,7 +261,8 @@ function nodeAction(node){
 }
 
 function nodeDefault(node){
-	node.className = 'node default';
+	node.className = "node";
+	node.style.backgroundColor = "#CCC";
 	node.index = null;
 	node.hadUp = false;
 	node.hadRight = false;
@@ -391,7 +392,6 @@ one("#makeResult-btn").onclick = function(){
 	console.log("makeResult:");
 	let result = getResult(c);
 
-	// let perColorAdd = Math.floor(255/result.length);
 	let perColorAdd = 255/result.length;
 
 	if(result.length){
