@@ -117,12 +117,9 @@ function getResult(chapter){
 			node.dir = null;
 		}
 		let startTime = new Date().getTime();
-		let couldUseTime = 5;
-
-
 
 		while(link.length < winLength){
-			if(new Date().getTime()-startTime > couldUseTime*1000){
+			if(new Date().getTime()-startTime > 120000){
 				return 1;
 			}
 

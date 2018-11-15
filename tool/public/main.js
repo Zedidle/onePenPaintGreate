@@ -34,7 +34,7 @@ let color = 0;
 
 let isEditModel = false;
 
-let couldUseTime = 5;
+let couldUseTime = 10;
 
 let size = 50, gap = 5;
 let unit = size + gap;
@@ -242,7 +242,7 @@ function gameWin(){
 			console.log(error);
 		});
 	}
-	alert(string);
+	console.log(string);
 
 	function filterXY(link){
 		let newLink = [];
@@ -353,7 +353,7 @@ one("#send-btn").onclick = function(){
 		.then(function (response) {
 			console.log(response);
 			if(response.data=='success'){
-				alert("录入关卡成功！");
+				console.log("录入关卡成功！");
 			}
 		})
 		.catch(function (error) {
@@ -413,13 +413,13 @@ one("#makeResult-btn").onclick = function(){
 				return "Finish";
 			}else{
 				color += perColorAdd;
-				setTimeout(render,100);
+				setTimeout(render,25);
 			}
 		})();
 
 
 	}else if(result == 1){
-		alert("无法在有效时间（"+couldUseTime+"s）内找到结果！");
+		alert("无法在有效时间内找到结果！");
 	}else if(result == 2){
 		alert("没有答案！");
 	}
