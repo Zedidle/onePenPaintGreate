@@ -34,6 +34,8 @@ let color = 0;
 
 let isEditModel = false;
 
+let couldUseTime = 5;
+
 let size = 50, gap = 5;
 let unit = size + gap;
 
@@ -336,7 +338,7 @@ one("#send-btn").onclick = function(){
 
 	let chapterNumber = parseInt(one("#chapter-number").value);
 	if(chapterNumber<1 || chapterNumber%1!==0){
-		alert("大小关卡数必须都是正整数！");
+		alert("关卡数必须是正整数！");
 	}else if(!c.startNode){
 		alert("必须先确认起点！");
 	}else{
@@ -417,7 +419,7 @@ one("#makeResult-btn").onclick = function(){
 
 
 	}else if(result == 1){
-		alert("无法在有效时间（2s）内找到结果！");
+		alert("无法在有效时间（"+couldUseTime+"s）内找到结果！");
 	}else if(result == 2){
 		alert("没有答案！");
 	}
